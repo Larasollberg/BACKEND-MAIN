@@ -5,7 +5,7 @@ import { ServerError } from '../utils/customError.utils.js'
 import WorkspaceController from '../controllers/workspace.controllers.js'
 import authMiddleware from '../middleware/auth.middleware.js'
 import workspaceMiddleware  from '../middleware/workspace.middleware.js'
-import channelMiddleware from '../middleware/channel.middleware.js'
+import channelMiddleware from '../middleware/channel.Middleware.js'
 import ChannelController from '../controllers/channel.controller.js'
 import MessageController from '../controllers/message.controller.js'
 
