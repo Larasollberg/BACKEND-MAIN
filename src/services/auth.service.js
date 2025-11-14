@@ -82,7 +82,7 @@ class AuthService {
         if(!is_same_password){
             throw new ServerError(401, 'Contraseña incorrecta')
         }
-        const autorization_token = jwt.sign(
+        const authorization_token = jwt.sign(
             {
                 id: user._id,
                 name: user.name,
