@@ -21,20 +21,15 @@ class AuthService {
 
         
         const verification_token = jwt.sign(
-            {   email: email,
-                user_id: user_created._id },
+            {   
+                email: email,
+                user_id: user_created._id 
+            },
                 ENVIRONMENT.JWT_SECRET_KEY
             
         )
-        return {
-            user: { 
-                id: user.id, 
-                email: user.email, 
-                name: user.name, 
-                username: user.username, 
-                is_verified: user.is_verified 
-            }
-        }
+        
+        
 
         //Enviar un mail de verificacion
         await transporter.sendMail({
@@ -96,16 +91,11 @@ class AuthService {
         )
 
         return {
-            authorization_token,
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email
-            }
+            authorization_token
         }
 
     }
-}
 
+}
 
 export default AuthService
