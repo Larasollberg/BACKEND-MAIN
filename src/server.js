@@ -49,9 +49,9 @@ app.get('/ruta-protegida', authMiddleware, (request, response) => {
 
 
 app.listen(
-    3000, 
+    ENVIRONMENT.PORT, 
     () => {
-        console.log("Esto esta funcionado")
+        console.log(`Servidor corriendo en ${ENVIRONMENT.URL_API_BACKEND}`)
     }
 )
 
