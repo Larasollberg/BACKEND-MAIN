@@ -3,10 +3,6 @@ import { ServerError } from "../utils/customError.utils.js";
 
 async function channelMiddleware (request, response, next) {
     try{
-        /* 
-        Cual es la responsabilidad de este middleware??
-        Verificar que el canal pertenezca al workspace seleccionado
-        */
         const {channel_id, workspace_id} = request.params;
         const channel_selected = await ChannelRepository.getByIdAndWorkspaceId(channel_id, workspace_id)
         if(!channel_selected){

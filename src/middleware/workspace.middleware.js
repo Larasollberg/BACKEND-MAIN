@@ -11,9 +11,7 @@ function workspaceMiddleware(valid_member_roles = []) {
             const user = request.user
             const { workspace_id } = request.params
 
-
-
-            //Checkear que el workspace exista
+            //Chekear que el workspace exista
             const workspace_selected = await WorkspacesRepository.getById(workspace_id)
 
             if (!workspace_selected) {
@@ -64,6 +62,5 @@ function workspaceMiddleware(valid_member_roles = []) {
     }
 }
 
-//workspaceMiddleware(['admin']) // function(request, response, next){ //Estara configurada para esos ROLES en particular }
 
 export default workspaceMiddleware

@@ -2,13 +2,18 @@ import Users from "../models/user.model.js"
 
 class UserRepository {
 
-    static async createUser(name, email, password) {
-        const user = await Users.create({
-            name,
-            email,
-            password,
+    static async create(name, email, password) {
+        const result = await Users.insertOne({
+            name: name,
+            email: email,
+            password: password,
         })
-        return user
+        return result
+    }
+
+    static async getAll() {
+    const users_get = await Users.find();
+    return users_get;
     }
 
     static async deleteById(user_id) {
@@ -28,18 +33,15 @@ class UserRepository {
 
 
     static async getByEmail (email){
-        console.log("Intentando buscar email:", email)
-        try{
-        const user = await Users.findOne({email: email})
-        console.log("Resultado Mongoose:", user)
+        const user = await Users.findOne({ email: email });
         return user
-        }
-        catch (e) {
-        // Si hay un error de importación de Mongoose, este catch lo atrapará
-        console.error("ERROR EN REPOSITORIO DB:", e); 
-        return null;
     }
+
+    static async getById(user_id) {
+    const user_found = await Users.findById(user_id);
+    return user_found;
     }
+    
 
         static async findByVerificationToken(token) {
         const user = await Users.findOne({ verificationToken: token });

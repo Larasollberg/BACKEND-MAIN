@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import ROLES from "../constants/roles.js"
 
 const MemberWorkspaceSchema = new mongoose.Schema(
     {
@@ -14,11 +15,11 @@ const MemberWorkspaceSchema = new mongoose.Schema(
         },
         role: {
             type:String,
-            enum:['admin', 'member'],
-            default:'member'
+            enum:[ROLES.ADMIN, ROLES.MEMBER],
+            default: ROLES.MEMBER
         },
         created_at: {
-            type:Date,
+            type: Date,
             default:Date.now
         }
     }

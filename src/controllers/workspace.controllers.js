@@ -7,8 +7,11 @@ import WorkspacesRepository from "../repositories/workspace.repository.js"
 import { ServerError } from "../utils/customError.utils.js"
 import { validarId } from "../utils/validations.utils.js"
 import jwt from 'jsonwebtoken'
+import WorkspaceService from "../services/workspace.service.js"
+
 
 class WorkspaceController {
+    
     static async getAll(request, response) {
         try {
             const workspaces = await MemberWorkspaceRepository.getAllWorkspacesByUserId(request.user.id)
@@ -110,7 +113,7 @@ class WorkspaceController {
 
     static async post(request, response) {
         try {
-
+            const user_id = request.user.id
             //request.body es donde esta la carga util enviada por el cliente
             //si aplicamos express.json() en nuestra app body siempre sera de tipo objeto
             const name = request.body.name
@@ -122,13 +125,43 @@ class WorkspaceController {
                     "el campo 'name' debe ser un string de menos de 30 caracteres"
                 )
             }
-           /*  else if (!url_img || typeof (url_img) !== 'string') {
-                throw new ServerError(
-                    400,
-                    "el campo 'url_img' debe ser un string de menos de 30 caracteres"
+            const workspace_created = await WorkspaceService.create(user_id, name, url_img)
+                return response.status(201).json({
+                    ok: true,
+                    status: 201,
+                    message: 'Workspace creado con exito',
+                        data: {
+                            workspace: {
+                                id: workspace_created._id, // Aseguramos que el ID se devuelve al cliente
+                                name: workspace_created.name
+                            }
+                        }
+                })
+        } catch (error) {
+            console.log(error)
+            //Evaluamos si es un error que nosotros definimos
+            if (error.status) {
+                return response.status(error.status).json(
+                            {
+                                ok: false,
+                                status: error.status,
+                                message: error.message
+                            }           
                 )
-            } */
-            else {
+            } else {
+                return response.status(500).json(
+                        {
+                            ok: false,
+                            status: 500,
+                            message: 'Error interno del servidor'
+                        }
+                )
+                }
+        }
+
+        }
+
+            /*else {
                 //Creamos el workspace con el repository
                 const workspace_id_created = await WorkspacesRepository.createWorkspace(name, url_img)
                 if (!workspace_id_created) {
@@ -169,7 +202,7 @@ class WorkspaceController {
             }
         }
 
-    }
+    }*/
 
 
     static async inviteMember(request, response) {

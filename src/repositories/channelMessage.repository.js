@@ -1,49 +1,32 @@
-import ChannelMessage from '../models/MessageChannel.model.js';
+import ChannelMessages from "../models/MessageChannel.model.js";
 
 class ChannelMessageRepository {
-    
-    /**
-     * @param {string} channelId - ID del canal para obtener los mensajes.
-     * @returns {Promise<Array>} Lista de mensajes con información del usuario.
-     */
-    static async getAllByChannelId(channelId) {
-        try {
-            // 1. Buscar documentos donde el campo 'channel' coincida con channelId.
-            // 2. Ordenar por fecha de creación (ascendente).
-            // 3. Usar .populate('user', 'username email') para reemplazar el JOIN:
-            //    Esto trae los campos 'username' y 'email' de la colección 'User'.
-            const messages = await ChannelMessageModel
-                .find({ channel: channelId })
-                .sort({ createdAt: 1 })
-                .populate('user', 'username email'); 
-                
-            return messages;
-        } catch (error) {
-            console.error('Error al obtener mensajes por ID de canal:', error);
-            throw error;
-        }
+  /* Crear un mensaje */
+    static async create(member_id, channel_id, content) {
+        const new_message = new ChannelMessages({
+        member: member_id,
+        channel: channel_id,
+        content: content,
+        });
+        await new_message.save();
+        return new_message;
     }
 
-    /**
-     * Crea un nuevo mensaje.
-     */
-    static async createMessage(userId, channelId, content) {
-        try {
-            const newMessage = await ChannelMessageModel.create({
-                user: userId,
-                channel: channelId,
-                content: content
-            });
-            return newMessage;
-        } catch (error) {
-            console.error('Error al crear el mensaje:', error);
-            throw error;
-        }
+    /* Obtener todos los mensajes de un canal */
+    static async getAllByChannelId(channel_id) {
+        const messages = await ChannelMessages.find({ channel: channel_id })
+        .populate({
+            path: "member",
+            populate: {
+            path: "user",
+            },
+        })
+        .sort({ created_at: 1 });
+        return messages;
     }
-}
+    }
 
-export default ChannelMessageRepository
-
+export default ChannelMessageRepository;
 
 
 

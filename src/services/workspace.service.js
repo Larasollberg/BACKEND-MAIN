@@ -1,6 +1,6 @@
 import ENVIRONMENT from "../config/environment.config.js"
-import mailTransporter from "../config/mailTransporter.config.js"
-import { ServerError } from "../error.js"
+import mailTransporter from "../config/mailer.config.js"
+import { ServerError } from "../utils/customError.utils.js"
 import MemberWorkspaceRepository from "../repositories/memberWorkspace.repository.js"
 import UserRepository from "../repositories/user.repository.js"
 import WorkspaceRepository from "../repositories/workspace.repository.js"
@@ -13,15 +13,13 @@ class WorkspaceService {
     }
 
     static async create(user_id, name, url_img) {
-
-        //Crear el espacio de trabajo 
+    
         const workspace_created = await WorkspaceRepository.create(name, url_img)
-
-        //Crear al miembro con role de  admin (Creador del workspace)
+        
         await MemberWorkspaceRepository.create(user_id, workspace_created._id, 'admin')
 
         return workspace_created
-    }
+    } 
 
     static async invite(member, workspace_selected, email_invited, role_invited) {
         const user_invited = await UserRepository.getByEmail(email_invited)
