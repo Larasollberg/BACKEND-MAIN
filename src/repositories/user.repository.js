@@ -2,8 +2,8 @@ import Users from "../models/user.model.js"
 
 class UserRepository {
 
-    static async create(name, email, password) {
-        const result = await Users.insertOne({
+    static async createUser(name, email, password) {
+        const result = await Users.create({
             name: name,
             email: email,
             password: password,
