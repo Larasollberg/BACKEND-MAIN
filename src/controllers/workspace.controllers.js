@@ -11,6 +11,36 @@ import WorkspaceService from "../services/workspace.service.js"
 
 
 class WorkspaceController {
+
+    static async create(request, response) {
+        try {
+        const { name, url_image } = request.body;
+        const user_id = request.user.id;
+
+        const workspace_id = await MemberWorkspaceRepository.create(name, url_image);
+        await MemberWorkspaceRepository.create(
+            user_id,
+            workspace_id,
+            ROLES.ADMIN
+        );
+
+        const workspace = await MemberWorkspaceRepository.getById(workspace_id);
+
+        response.json({
+            ok: true,
+            message: "Workspace creado exitosamente",
+            data: {
+            workspace: workspace,
+            },
+        });
+        } catch (error) {
+        response.json({
+            ok: false,
+            message: error.message,
+        });
+        }
+    }
+
     
     static async getAll(request, response) {
         try {
@@ -158,52 +188,7 @@ class WorkspaceController {
                 )
                 }
         }
-
         }
-
-            /*else {
-                //Creamos el workspace con el repository
-                const workspace_id_created = await WorkspacesRepository.createWorkspace(name, url_img)
-                if (!workspace_id_created) {
-                    throw new ServerError(
-                        500,
-                        'Error al crear el workspace'
-                    )
-                }
-                await MemberWorkspaceRepository.create(request.user.id, workspace_id_created, 'admin')
-                //Si todo salio bien respondemos con {ok: true, message: 'Workspace creado con exito'}
-                return response.status(201).json({
-                    ok: true,
-                    status: 201,
-                    message: 'Workspace creado con exito'
-                })
-            }
-        }
-        catch (error) {
-            console.log(error)
-            //Evaluamos si es un error que nosotros definimos
-            if (error.status) {
-                return response.status(error.status).json(
-                    {
-                        ok: false,
-                        status: error.status,
-                        message: error.message
-                    }
-                )
-            }
-            else {
-                return response.status(500).json(
-                    {
-                        ok: false,
-                        status: 500,
-                        message: 'Error interno del servidor'
-                    }
-                )
-            }
-        }
-
-    }*/
-
 
     static async inviteMember(request, response) {
         try {

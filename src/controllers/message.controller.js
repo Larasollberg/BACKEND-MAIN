@@ -5,7 +5,7 @@ class MessageController {
         const {channel_id} = request.params
         const {content} = request.body
         const member_id = request.member._id
-        const messages_list = await MessageService.create(content, member_id, channel_id)
+        /*const messages_list = await MessageService.create(content, member_id, channel_id)
         response.status(201).json(
             {
                 ok: true,
@@ -15,23 +15,38 @@ class MessageController {
                     messages: messages_list
                 }
             }
-        )
-    }
+        )*/
+        await MessageService.create(member_id, channel_id, content);
+        response.json({
+            ok: true,
+            message: "Mensaje creado exitosamente",
+        });
+        } catch (error) {
+        response.json({
+            ok: false,
+            message: error.message,
+        });
+        }
+    
+    
 
     static async getAllByChannel(request, response) {
         const { channel_id } = request.params
         const messages_list = await MessageService.getAllByChannelId(channel_id)
-        response.status(200).json(
+        response.json(
             {
                 ok: true,
-                status: 200, 
-                message:'Mensajes obtenidos',
                 data: {
-                    messages: messages_list
-                }
-            }
-        )
-    }   
-}
+            messages: messages,
+            },
+        });
+        } catch (error) {
+        response.json({
+            ok: false,
+            message: error.message,
+        });
+        }
+    }
+
 
 export default MessageController

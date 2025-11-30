@@ -18,19 +18,18 @@ class AuthController {
             if(!name){
                 throw new ServerError(
                     400, 
-                    'Debes enviar un nombre de usuario valido'
-                )
+                    'Debes enviar un nombre de usuario valido')
             }
             else if(!email || !String(email).toLowerCase().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
                 throw new ServerError(
                     400, 
-                    'Debes enviar un email valido'
+                    'Debes enviar un email válido'
                 )
             }
             else if(!password || password.length < 8){
                 throw new ServerError(
                     400, 
-                    'Debes enviar una contraseña valida'
+                    'Debes enviar una contraseña valida, mayor a 8 caracteres'
                 )
             }
             await AuthService.register(name, email, password)
@@ -74,7 +73,7 @@ class AuthController {
                 status: 200,
                 data: {
                     authorization_token: authorization_token,
-                    user: user
+                    //user: user
                 }
             })
         }
@@ -103,7 +102,7 @@ class AuthController {
 
     static async verifyEmail(request, response) {
         try{
-            const { verification_token } = request.params
+            const { verification_token } = request.params;
             
             await AuthService.verifyEmail(verification_token)
 

@@ -10,13 +10,13 @@ const transporter = nodemailer.createTransport({
         }
     });
     
-    transporter.verify((error, success) => {
+    /*transporter.verify((error, success) => {
     if (error) {
         console.error('Error al conectar con Gmail:', error);
     } else {
         console.log('Servidor de correo listo para enviar mensajes');
     }
-});
+});*/
 
 
 export default transporter

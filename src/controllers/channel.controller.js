@@ -5,7 +5,7 @@ class ChannelController {
         try {
             const { name } = request.body;
             const { workspace_id } = request.params
-            if (!name || !workspace_id) {
+            /*if (!name || !workspace_id) {
                 return response.status(400).json({
                     ok: false,
                     status: 400,
@@ -24,13 +24,23 @@ class ChannelController {
                 });
             }
 
-            const isPrivate = false;
+            const isPrivate = false;*/
             await ChannelRepository.create(
                 name,
                 isPrivate,
                 workspace_id
             );
-            const updatedChannels = await ChannelRepository.getAllByWorkspace(
+                response.json({
+            ok: true,
+            message: "Canal creado exitosamente",
+        });
+        } catch (error) {
+        response.json({
+            ok: false,
+            message: error.message,
+        });
+    }
+            /*const updatedChannels = await ChannelRepository.getAllByWorkspace(
                 workspace_id
             );
 
@@ -49,15 +59,13 @@ class ChannelController {
                 status: 500,
                 message: "Error interno del servidor al crear el canal",
             });
-        }
+        }*/
     }
     static async getAllByWorkspace (request, response){
         try{
             //Obtener la lista de canales de un espacio de trabajo
             const {workspace_id} = request.params
-            const channels = await ChannelRepository.getAllByWorkspace(
-                workspace_id
-            );
+            const channels = await ChannelRepository.getAllByWorkspace( workspace_id);
 
             return response.json({
                 ok: true, 
@@ -67,10 +75,7 @@ class ChannelController {
                     channels: channels
                 }
             })
-
-
-        }
-        catch (error) {
+        }catch (error) {
             console.error("Error al listar channels:", error);
             return response.status(500).json({
                 ok: false,
@@ -79,40 +84,39 @@ class ChannelController {
             });
         }
     }
-}
+    static async deleteChannel(request, response) {
+    try {
+        const { workspace_id, channel_id } = request.params;
+        const user_id = request.user.id;
+
+        const member =
+            await MemberWorkspaceRepository.getMemberWorkspaceByUserIdAndWorkspaceId(
+            user_id,
+            workspace_id
+            );
+        if (!member || member.role != ROLES.ADMIN) {
+            return response.status(403).json({
+            ok: false,
+            message: "Solo los administradores pueden eliminar canales",
+            });
+        }
+
+        await ChannelRepository.deleteById(channel_id);
+
+        response.json({
+            ok: true,
+            message: "Canal eliminado exitosamente",
+        });
+        } catch (error) {
+        response.status(500).json({
+            ok: false,
+            message: error.message,
+        });
+        }
+    }
+    }
+
 
 export default ChannelController
 
 
-/* 
-Supabase
-RLS: Row level security:
-    - Se aplican en cada tabla
-    - Solo el usuario fulanito
-        Usuarios
-            - Lectura
-        
-        Productos
-            - Lectura 
-            - Escritura
-*/
-
-
-/* 
-            body:
-                -name
-            
-            Checkear que no exista actualmente un canal con el mismo nombre (dentro del workspace)
-            Crear un canal con este nombre
-            Responder:
-            {
-                ok,
-                status:201,,
-                message:'Canal creado con exito',
-                data: {
-                    channels: [
-                        ...lista de canales pertenecientes al workspace + el nuevo canal
-                    ]
-                }
-            }
-            */
