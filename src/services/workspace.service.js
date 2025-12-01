@@ -15,10 +15,15 @@ class WorkspaceService {
     static async create(user_id, name, url_img) {
     
         const workspace_created = await WorkspaceRepository.create(name, url_img)
-        
+        if (!workspace_created || !workspace_created._id) {
+            throw new Error('Error al crear workspace: workspace_created inválido');
+        }
         await MemberWorkspaceRepository.create(user_id, workspace_created._id, 'admin')
 
         return workspace_created
+        } catch (error) {
+        console.error('Error en WorkspaceService.create:', error);
+        throw error  
     } 
 
     static async invite(member, workspace_selected, email_invited, role_invited) {

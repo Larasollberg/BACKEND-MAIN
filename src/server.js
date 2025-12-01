@@ -15,7 +15,7 @@ import AuthController from "./controllers/auth.controller.js"
 
 const app = express()
 
-app.use(cors())
+app.use(cors({ origin: [process.env.URL_FRONTEND], credentials: true }))
 app.use(express.json())
 app.get('/api/auth/verify/:token', AuthController.verifyEmail)
 
