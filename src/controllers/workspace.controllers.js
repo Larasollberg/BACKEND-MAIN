@@ -144,12 +144,10 @@ class WorkspaceController {
     static async post(request, response) {
         try {
             const user_id = request.user.id
-            //request.body es donde esta la carga util enviada por el cliente
-            //si aplicamos express.json() en nuestra app body siempre sera de tipo objeto
             const name = request.body.name
             const url_img = request.body.url_img
-            //Validar que name este y que sea valido (por ejemplo un string no VACIO de no mas de 30 caracteres)
-            if (!name || typeof (name) !== 'string' || name.length > 30) {
+
+            if (!name || typeof(name) !== 'string' || name.length > 30) {
                 throw new ServerError(
                     400,
                     "el campo 'name' debe ser un string de menos de 30 caracteres"
@@ -211,12 +209,6 @@ class WorkspaceController {
                 throw new ServerError(409, `Usuario con email ${invited_email} ya es miembro del workspace`)
             }
 
-            /* Crear un token con {
-                id_invitado,
-                id_workspace,
-                id_invitador
-            } CON JWT
-            */
             const id_inviter = member._id
             const invite_token = jwt.sign(
                 {
@@ -227,7 +219,7 @@ class WorkspaceController {
                 },
                 ENVIRONMENT.JWT_SECRET_KEY,
                 {
-                    expiresIn: '7d'
+                    expiresIn: '30d'
                 }
             )
 

@@ -42,7 +42,7 @@ class WorkspaceService {
             },
             ENVIRONMENT.JWT_SECRET,
             {
-                expiresIn: '7d'
+                expiresIn: '30d'
             }
         )
 
